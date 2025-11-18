@@ -25,7 +25,7 @@ const getAllBooks = async (req, res) => {
   }
 };
 
-// GET single book
+// GET single book by ID
 const getSingleBook = async (req, res) => {
   try {
     const { id } = req.params;
@@ -60,4 +60,42 @@ const getSingleBook = async (req, res) => {
   }
 };
 
-module.exports = { getAllBooks, getSingleBook };
+// POST new book
+
+const addNewBook = async (req, res) => {
+  try {
+    const book = req.body;
+    if (!book || Object.keys(book).length === 0) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: "Please provide book data",
+      });
+    }
+
+    const newBook = await Book.create(book);
+
+    res.status(201).json({
+      success: true,
+      data: newBook,
+      message: "Book added successfully",
+    });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      // Collect all validation error messages
+      const messages = Object.values(error.errors).map((val) => val.message);
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: messages,
+      });
+    }
+    res.status(500).json({
+      success: false,
+      data: null,
+      message: error.message || "Server Error",
+    });
+  }
+};
+
+module.exports = { getAllBooks, getSingleBook, addNewBook };

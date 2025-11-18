@@ -43,3 +43,22 @@ isbn: {
 ### Operation `books.find()` buffering timed out after 10000ms
 
 - db connection error
+
+### In JavaScript, Object.keys() is a built-in method that returns an array of a given object’s own enumerable property names (keys).
+
+```bash
+const person = {
+  name: "Alice",
+  age: 30,
+  city: "London"
+};
+
+const keys = Object.keys(person);
+console.log(keys); // ["name", "age", "city"]
+
+```
+
+- Mongoose strict mode (default: true) ignores fields not defined in the schema.
+- Extra fields sent by clients won’t be saved to MongoDB.
+- strict: false allows saving extra fields; strict: "throw" raises an error.
+- Validation applies only to defined schema fields, ensuring structured data.
