@@ -39,3 +39,7 @@ isbn: {
       trim: true,
     },
 ```
+
+### Operation `books.find()` buffering timed out after 10000ms
+
+- db connection error
