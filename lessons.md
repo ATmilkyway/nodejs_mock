@@ -14,7 +14,6 @@ That’s all.
 
 - Anything in your .env becomes available in process.env
 
-
 ### npx nodemon ./database/db.js
 
 ```bash
@@ -23,4 +22,20 @@ Local nodemon stays in node_modules/.bin → use: npx nodemon file.js
 Recommended: add script "dev": "nodemon file.js" in package.json
 Run script: npm run dev (works for both global and local)
 
+```
+
+### schema validation
+
+```
+isbn: {
+      type: String,
+      match: [/^(?:\d{9}[\dXx]|\d{13})$/, "Invalid ISBN format"],
+      validate: {
+        validator: function (v) {
+          return !v || v.length === 10 || v.length === 13;
+        },
+        message: "ISBN must be 10 or 13 characters",
+      },
+      trim: true,
+    },
 ```
