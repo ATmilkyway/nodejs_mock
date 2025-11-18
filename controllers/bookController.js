@@ -61,7 +61,6 @@ const getSingleBook = async (req, res) => {
 };
 
 // POST new book
-
 const addNewBook = async (req, res) => {
   try {
     const book = req.body;
@@ -98,4 +97,39 @@ const addNewBook = async (req, res) => {
   }
 };
 
-module.exports = { getAllBooks, getSingleBook, addNewBook };
+// Delete book by ID
+const deleteSingleBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: "Invalid book ID",
+      });
+    }
+
+    const book = await Book.findByIdAndDelete({ _id: id });
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        data: null,
+        message: "Book not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: book,
+      message: "Book deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Server Error",
+    });
+  }
+};
+
+module.exports = { getAllBooks, getSingleBook, addNewBook, deleteSingleBook };
