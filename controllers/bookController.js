@@ -9,7 +9,7 @@ const getAllBooks = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: [],
-        message: "Books not found",
+        message: "No books were found",
       });
     }
     res.status(200).json({
@@ -121,7 +121,6 @@ const deleteSingleBook = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: book,
       message: "Book deleted successfully",
     });
   } catch (error) {
