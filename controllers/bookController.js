@@ -14,7 +14,7 @@ const getAllBooks = async (req, res) => {
     }
     res.status(200).json({
       success: true,
-      data: allBooks,
+      data: { books: allBooks },
       message: "Books fetched successfully",
     });
   } catch (error) {
@@ -49,7 +49,7 @@ const getSingleBook = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: book,
+      data: { book },
       message: "Book fetched successfully",
     });
   } catch (error) {
@@ -76,7 +76,7 @@ const addNewBook = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: newBook,
+      data: { book: newBook },
       message: "Book added successfully",
     });
   } catch (error) {
@@ -110,7 +110,7 @@ const deleteSingleBook = async (req, res) => {
       });
     }
 
-    const book = await Book.findByIdAndDelete({ _id: id });
+    const book = await Book.findByIdAndDelete(id);
     if (!book) {
       return res.status(404).json({
         success: false,
@@ -131,4 +131,50 @@ const deleteSingleBook = async (req, res) => {
   }
 };
 
-module.exports = { getAllBooks, getSingleBook, addNewBook, deleteSingleBook };
+// Update book by ID
+const updateSingleBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateDate = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: "Invalid book ID",
+      });
+    }
+
+    const book = await Book.findByIdAndUpdate(id, updateDate, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        data: null,
+        message: "Book not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: book,
+      message: "Book updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Server Error",
+    });
+  }
+};
+
+module.exports = {
+  getAllBooks,
+  getSingleBook,
+  addNewBook,
+  deleteSingleBook,
+  updateSingleBook,
+};

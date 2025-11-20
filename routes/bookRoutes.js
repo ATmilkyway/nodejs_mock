@@ -5,6 +5,7 @@ const {
   getSingleBook,
   addNewBook,
   deleteSingleBook,
+  updateSingleBook,
 } = require("../controllers/bookController");
 
 // GET all books
@@ -17,7 +18,7 @@ router.get("/:id", getSingleBook);
 router.post("/", addNewBook);
 
 // PATCH update a book by ID
-router.patch("/:id", (req, res) => {});
+router.patch("/:id", updateSingleBook);
 
 // DELETE a book by ID
 router.delete("/:id", deleteSingleBook);
