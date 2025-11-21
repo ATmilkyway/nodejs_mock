@@ -74,3 +74,50 @@ console.log(keys); // ["name", "age", "city"]
 - Use connect() for normal app DB connection.
 
 - Use createConnection() only if you need multiple independent DB connections.
+
+### naming
+
+project/
+├─ controllers/
+│ ├─ userController.js
+├─ models/
+│ ├─ User.js
+├─ routes/
+│ ├─ users.js
+├─ middleware/
+│ ├─ auth.js
+├─ utils/
+│ ├─ emailSender.js
+├─ server.js
+
+# orders
+
+```bash
+=========================================================
+// 1️⃣ Load environment variables
+require("dotenv").config();
+
+// 2️⃣ Import modules
+const express = require("express");
+const connectDB = require("./database/db");
+const router = require("./routes/books");
+
+// 3️⃣ Create Express app
+const app = express();
+
+// 4️⃣ Connect to MongoDB
+connectDB();
+
+// 5️⃣ Middleware to parse JSON (optional but recommended)
+app.use(express.json());
+
+// 6️⃣ Register routes
+app.use("/api/v1/books", router);
+
+// 7️⃣ Start the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+console.log(`Server running on port ${PORT}`);
+});
+==================================================
+```
