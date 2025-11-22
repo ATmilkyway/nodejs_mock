@@ -7,6 +7,7 @@ const {
   getAllBooks,
   getSingleBook,
   createSingleBook,
+  deleteSingleBook,
 } = require("../controller/bookController");
 
 // GET all books
@@ -19,6 +20,7 @@ router.get("/:id", getSingleBook);
 router.post("/", createSingleBook);
 
 // DELETE a book by ID
+router.delete("/:id", deleteSingleBook);
 
 // UPDATE a book by ID
 

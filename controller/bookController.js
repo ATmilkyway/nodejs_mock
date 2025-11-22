@@ -123,4 +123,51 @@ const createSingleBook = async (req, res) => {
   }
 };
 
-module.exports = { getAllBooks, getSingleBook, createSingleBook };
+// Delete book
+const deleteSingleBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid book ID",
+        data: null,
+      });
+    }
+
+    // Find and delete book
+    const book = await Book.findOneAndDelete({ _id: id });
+
+    // Not found
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        message: "Book not found",
+        data: null,
+      });
+    }
+
+    // Successfully deleted
+    return res.status(200).json({
+      success: true,
+      message: "Book deleted successfully",
+      data: book,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      data: null,
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  getAllBooks,
+  getSingleBook,
+  createSingleBook,
+  deleteSingleBook,
+};
