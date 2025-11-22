@@ -165,9 +165,54 @@ const deleteSingleBook = async (req, res) => {
   }
 };
 
+// Update book
+const updateSingleBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    // Validate ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid book ID",
+        data: null,
+      });
+    }
+
+    // Update book
+    const updatedBook = await Book.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedBook) {
+      return res.status(404).json({
+        success: false,
+        message: "Book not found",
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book updated successfully",
+      data: updatedBook,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error while updating the book",
+      data: null,
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllBooks,
   getSingleBook,
   createSingleBook,
   deleteSingleBook,
+  updateSingleBook,
 };
