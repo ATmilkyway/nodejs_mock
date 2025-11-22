@@ -1,5 +1,5 @@
-const Book = require("../models/Book");
 const mongoose = require("mongoose");
+const Book = require("../models/Book");
 
 // Get all books
 const getAllBooks = async (req, res) => {
@@ -73,4 +73,54 @@ const getSingleBook = async (req, res) => {
   }
 };
 
-module.exports = { getAllBooks, getSingleBook };
+// Create book
+const createSingleBook = async (req, res) => {
+  try {
+    const bookData = req.body;
+
+    // Validate incoming data
+    if (!bookData || Object.keys(bookData).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill the required book data",
+        data: null,
+      });
+    }
+
+    // Create book
+    const newBook = await Book.create(bookData);
+
+    return res.status(201).json({
+      success: true,
+      message: "Book created successfully",
+      data: { book: newBook },
+    });
+  } catch (error) {
+    // Handle Mongoose validation errors
+    if (error.name === "ValidationError") {
+      const fieldMessages = Object.values(error.errors).map(
+        (err) => err.properties.message
+      );
+
+      return res.status(400).json({
+        success: false,
+        message: "Invalid book data",
+        errors: {
+          type: "ValidationError",
+          fieldMessages,
+        },
+        data: null,
+      });
+    }
+
+    // Handle other errors
+    return res.status(500).json({
+      success: false,
+      message: "Error while creating a book",
+      data: null,
+      error: error._message || error.message || "Unknown error",
+    });
+  }
+};
+
+module.exports = { getAllBooks, getSingleBook, createSingleBook };

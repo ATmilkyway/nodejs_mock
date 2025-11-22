@@ -3,7 +3,11 @@ const express = require("express");
 const router = express.Router();
 
 const Book = require("../models/Book");
-const { getAllBooks, getSingleBook } = require("../controller/bookController");
+const {
+  getAllBooks,
+  getSingleBook,
+  createSingleBook,
+} = require("../controller/bookController");
 
 // GET all books
 router.get("/", getAllBooks);
@@ -12,6 +16,7 @@ router.get("/", getAllBooks);
 router.get("/:id", getSingleBook);
 
 // CREATE a book
+router.post("/", createSingleBook);
 
 // DELETE a book by ID
 
