@@ -62,3 +62,75 @@ console.log(keys); // ["name", "age", "city"]
 - Extra fields sent by clients won’t be saved to MongoDB.
 - strict: false allows saving extra fields; strict: "throw" raises an error.
 - Validation applies only to defined schema fields, ensuring structured data.
+
+### git restore --source book-api lessons.md
+
+### mongodb connect and create connection
+
+- mongoose.connect(uri) → connects the whole app, returns a Promise, can use await, errors go to catch.
+
+- mongoose.createConnection(uri) → creates a separate connection object, not a Promise, cannot await, used for multiple DBs.
+
+- Use connect() for normal app DB connection.
+
+- Use createConnection() only if you need multiple independent DB connections.
+
+### naming
+
+project/
+├─ controllers/
+│ ├─ userController.js
+├─ models/
+│ ├─ User.js
+├─ routes/
+│ ├─ users.js
+├─ middleware/
+│ ├─ auth.js
+├─ utils/
+│ ├─ emailSender.js
+├─ server.js
+
+# orders
+
+```bash
+=========================================================
+// 1️⃣ Load environment variables
+require("dotenv").config();
+
+// 2️⃣ Import modules
+const express = require("express");
+const connectDB = require("./database/db");
+const router = require("./routes/books");
+
+// 3️⃣ Create Express app
+const app = express();
+
+// 4️⃣ Connect to MongoDB
+connectDB();
+
+// 5️⃣ Middleware to parse JSON (optional but recommended)
+app.use(express.json());
+
+// 6️⃣ Register routes
+app.use("/api/v1/books", router);
+
+// 7️⃣ Start the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+console.log(`Server running on port ${PORT}`);
+});
+==================================================
+```
+
+```bash
+git push -u origin book-api-2
+
+```
+
+### Validation file
+
+```
+Method	Returns	How to check
+find()	Array	if (result.length === 0)
+findById()	Object or null	if (!result)
+```
