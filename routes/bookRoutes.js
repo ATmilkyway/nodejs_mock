@@ -2,20 +2,14 @@ const express = require("express");
 
 const router = express.Router();
 
+const Book = require("../models/Book");
+const { getAllBooks, getSingleBook } = require("../controller/bookController");
+
 // GET all books
-router.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      books: [
-        { id: 1, title: "One" },
-        { id: 2, title: "Two" },
-      ],
-    },
-  });
-});
+router.get("/", getAllBooks);
 
 // GET book by ID
+router.get("/:id", getSingleBook);
 
 // CREATE a book
 

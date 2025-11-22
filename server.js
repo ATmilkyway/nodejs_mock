@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const connectDB = require("./database/db");
-const router = require("./routes/books");
+const bookRoutes = require("./routes/bookRoutes");
 
 const app = express();
 
@@ -9,7 +9,7 @@ connectDB();
 
 app.use(express.json());
 
-app.use("/api/v1/books", router);
+app.use("/api/v1/books", bookRoutes);
 
 const PORT = process.env.PORT || 4000;
 

@@ -121,3 +121,16 @@ console.log(`Server running on port ${PORT}`);
 });
 ==================================================
 ```
+
+```bash
+git push -u origin book-api-2
+
+```
+
+### Validation file
+
+```
+Method	Returns	How to check
+find()	Array	if (result.length === 0)
+findById()	Object or null	if (!result)
+```
