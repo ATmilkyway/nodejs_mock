@@ -3,13 +3,13 @@ const User = require("../models/User.ts");
 // Register controller
 const registerUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, role } = req.body;
 
     // Handle empty body
-    if (!username || !password) {
+    if (!username || !password || !role) {
       return res.status(400).json({
         success: false,
-        message: "Username and password are required",
+        message: "Username, password and role are required",
       });
     }
 
