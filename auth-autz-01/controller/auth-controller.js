@@ -1,4 +1,5 @@
 const User = require("../models/User.ts");
+const bcrypt = require("bcryptjs");
 
 // Register controller
 const registerUser = async (req, res) => {
@@ -6,10 +7,10 @@ const registerUser = async (req, res) => {
     const { username, password, role } = req.body;
 
     // Handle empty body
-    if (!username || !password || !role) {
+    if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: "Username, password and role are required",
+        message: "Username and password are required",
       });
     }
 
@@ -22,10 +23,15 @@ const registerUser = async (req, res) => {
       });
     }
 
+    // hash user password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     // Create new user
     const newUser = await User.create({
       username: username,
-      password: password, // Plain text for now
+      password: hashedPassword,
+      role: role || "user",
     });
 
     // Return response
