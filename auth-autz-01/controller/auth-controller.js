@@ -14,6 +14,14 @@ const registerUser = async (req, res) => {
       });
     }
 
+    // Handle role
+    if (role && !["user", "admin"].includes(role.toLowerCase())) {
+      return res.status(400).json({
+        success: false,
+        message: "Role must be either 'user' or 'admin'",
+      });
+    }
+
     // Check if username exists
     const userExist = await User.findOne({ username });
     if (userExist) {
