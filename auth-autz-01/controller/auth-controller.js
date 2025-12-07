@@ -1,5 +1,6 @@
 const User = require("../models/User.ts");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // Register controller
 const registerUser = async (req, res) => {
@@ -77,7 +78,7 @@ const loginUser = async (req, res) => {
     // Check if user exists
     const user = await User.findOne({ username }).select("+password");
     if (!user) {
-      return res.status(409).json({
+      return res.status(401).json({
         success: false,
         message: "User not found",
       });
@@ -85,17 +86,45 @@ const loginUser = async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid credentials",
       });
     }
 
+    const accessToken = jwt.sign(
+      {
+        userId: user._id,
+        username: user.username,
+        role: user.role,
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "15m" }
+    );
+
+    const userResponse = {
+      _id: user._id,
+      username: user.username,
+      role: user.role,
+    };
+
     res.status(200).json({
       success: true,
-      message: "login successfully",
+      message: "Login successful",
+      data: {
+        user: userResponse,
+        accessToken,
+      },
     });
   } catch (error) {
+    // Handle JWT
+    if (error.name === "JsonWebTokenError") {
+      return res.status(500).json({
+        success: false,
+        message: "Token generation failed",
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Internal server error",
