@@ -1,16 +1,20 @@
-    require("dotenv").config();
-    const express = require("express");
+require("dotenv").config();
+const express = require("express");
+const connectDB = require("./database/db");
 
-    const app = express();
+const app = express();
 
-    app.use(express.json());
+app.use(express.json());
 
-    const PORT = process.env.PORT || 3000;
+// connect DB
+connectDB();
 
-    try {
-    app.listen(PORT, () => {
-        console.log("Server 🟢");
-    });
-    } catch (error) {
-    console.log("Server 🛑", error.message);
-    }
+const PORT = process.env.PORT || 3000;
+
+try {
+  app.listen(PORT, () => {
+    console.log("Server 🟢");
+  });
+} catch (error) {
+  console.log("Server 🛑", error.message);
+}
