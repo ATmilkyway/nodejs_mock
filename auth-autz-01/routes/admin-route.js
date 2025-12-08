@@ -1,9 +1,10 @@
 const express = require("express");
 const authMiddleware = require("../middleware/auth-middleware");
+const isAdminUser = require("../middleware/admin-middleware");
 
 const router = express.Router();
 
-router.get("/", authMiddleware, (req, res) => {
+router.get("/", authMiddleware, isAdminUser, (req, res) => {
   if (!req.userInfo) {
     return res.status(401).json({
       success: false,
