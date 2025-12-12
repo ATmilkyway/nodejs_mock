@@ -6,15 +6,17 @@ import {
   Input,
   Portal,
 } from "@chakra-ui/react";
-import { PasswordInput } from "./password-input";
+ 
 import { useForm } from "react-hook-form";
 import apiClient from "@/service.ts/apiClient";
-import { toaster } from "./toaster";
+import { toaster } from "./ui/toaster";
+import { PasswordInput } from "./ui/password-input";
+ 
 
 interface Props {
   setLogin: (loginStatus: boolean) => void;
-  registerModal: boolean;
-  setRegisterModal: (modalState: boolean) => void;
+  loginModal: boolean;
+  setLoginModal: (modalState: boolean) => void;
 }
 
 interface FormValues {
@@ -22,8 +24,13 @@ interface FormValues {
   password: string;
 }
 
-const RegistrationDialog = ({ setLogin, registerModal, setRegisterModal }: Props) => {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>();
+const LoginDialog = ({ setLogin, loginModal, setLoginModal }: Props) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormValues>();
 
   const showToast = (description: string, type: "success" | "error") => {
     toaster.create({ description, type, closable: true });
@@ -31,17 +38,34 @@ const RegistrationDialog = ({ setLogin, registerModal, setRegisterModal }: Props
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const res = await apiClient.post("/api/register", data);
+      const res = await apiClient.post("/api/login", data);
 
-      if (!res) return showToast("Error while creating user", "error");
+      console.log("Login response:", res.data); // DEBUG
 
-      showToast("User created successfully", "success");
+      // Check if API indicates success
+      if (!res.data.success) {
+        return showToast(res.data.message || "Invalid username or password", "error");
+      }
+
+      // Extract token and user
+      const token = res.data.data.accessToken;
+      const user = res.data.data.user;
+
+      if (!token) {
+        return showToast("Invalid username or password", "error");
+      }
+
+      // Save token and user in localStorage
+      localStorage.setItem("accessToken", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      showToast(`Welcome, ${user.username}!`, "success");
       setLogin(true);
-      setRegisterModal(false);
+      setLoginModal(false);
       reset();
     } catch (error: any) {
-      console.error("API error:", error);
-      const message = error?.response?.data?.message || "User already exists";
+      console.error("Login error:", error);
+      const message = error?.response?.data?.message || "Login failed";
       showToast(message, "error");
     }
   };
@@ -50,15 +74,15 @@ const RegistrationDialog = ({ setLogin, registerModal, setRegisterModal }: Props
     <Dialog.Root
       placement="center"
       lazyMount
-      open={registerModal}
-      onOpenChange={(e) => setRegisterModal(e.open)}
+      open={loginModal}
+      onOpenChange={(e) => setLoginModal(e.open)}
     >
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Registration Form</Dialog.Title>
+              <Dialog.Title>Login</Dialog.Title>
             </Dialog.Header>
 
             <Dialog.Body>
@@ -87,11 +111,11 @@ const RegistrationDialog = ({ setLogin, registerModal, setRegisterModal }: Props
 
                 <Dialog.Footer>
                   <Dialog.ActionTrigger asChild>
-                    <Button variant="outline" onClick={() => setRegisterModal(false)}>
+                    <Button variant="outline" onClick={() => setLoginModal(false)}>
                       Cancel
                     </Button>
                   </Dialog.ActionTrigger>
-                  <Button type="submit">Register</Button>
+                  <Button type="submit">Login</Button>
                 </Dialog.Footer>
               </form>
             </Dialog.Body>
@@ -106,4 +130,4 @@ const RegistrationDialog = ({ setLogin, registerModal, setRegisterModal }: Props
   );
 };
 
-export default RegistrationDialog;
+export default LoginDialog;

@@ -1,25 +1,33 @@
 import { Grid, GridItem } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import RegistrationDialog from "./components/ui/RegistrationDialog";
+
 import { useState } from "react";
 import { Toaster } from "./components/ui/toaster";
+import LoginDialog from "./components/LoginDialog";
 
 const App = () => {
   const [registerModal, setRegisterModal] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
   const [isLogin, setLogin] = useState(false);
-  const handleRegistrationModal = (modalState: boolean) => {
-    setRegisterModal(modalState);
-  };
+
   return (
     <>
       <Toaster />
+
+      {/* Modals */}
       <RegistrationDialog
-        setLogin={(loginStatus) => {
-          setLogin(true);
-        }}
+        setLogin={setLogin}
         registerModal={registerModal}
-        setRegisterModal={handleRegistrationModal}
+        setRegisterModal={setRegisterModal}
       />
+      <LoginDialog
+        setLogin={setLogin}
+        loginModal={loginModal}
+        setLoginModal={setLoginModal}
+      />
+
+      {/* Grid Layout */}
       <Grid
         templateAreas={{
           base: `"nav" "main"`,
@@ -36,12 +44,15 @@ const App = () => {
         <GridItem area="nav" bg="gray.50">
           <NavBar
             isLogin={isLogin}
-            setRegisterModal={handleRegistrationModal}
+            setRegisterModal={setRegisterModal}
+            setLoginModal={setLoginModal}
           />
         </GridItem>
+
         <GridItem area="side" bg="green.100" hideBelow="md" height="80vh">
           Side
         </GridItem>
+
         <GridItem area="main" bg="orange.100">
           Main
         </GridItem>
