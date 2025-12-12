@@ -32,7 +32,7 @@ const NavBar = ({ setRegisterModal }: Props) => {
           <Button variant="ghost" onClick={() => setRegisterModal(true)}>
             Register
           </Button>
-          <Button variant="ghost">Singin</Button>
+          <Button variant="ghost">Log in</Button>
         </HStack>
       )}
     </HStack>

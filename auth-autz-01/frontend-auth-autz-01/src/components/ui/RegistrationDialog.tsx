@@ -1,4 +1,12 @@
-import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react";
+import {
+  Button,
+  CloseButton,
+  Dialog,
+  Field,
+  Input,
+  Portal,
+} from "@chakra-ui/react";
+import { PasswordInput } from "./password-input";
 
 interface Props {
   registerModal: boolean;
@@ -21,14 +29,30 @@ const RegistrationDialog = ({ registerModal, setRegisterModal }: Props) => {
               <Dialog.Title>Registration Form</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
-              <p></p>
+              {/* form */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  console.log(e);
+                }}
+              >
+                <Field.Root>
+                  <Field.Label>UserName</Field.Label>
+                  <Input placeholder="UserName" size="xs" />
+                </Field.Root>
+
+                <Field.Root paddingY={5}>
+                  <Field.Label>Password</Field.Label>
+                  <PasswordInput placeholder="Password" size="xs" />
+                </Field.Root>
+                <Dialog.Footer>
+                  <Dialog.ActionTrigger asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </Dialog.ActionTrigger>
+                  <Button type="submit">Register</Button>
+                </Dialog.Footer>
+              </form>
             </Dialog.Body>
-            <Dialog.Footer>
-              <Dialog.ActionTrigger asChild>
-                <Button variant="outline">Cancel</Button>
-              </Dialog.ActionTrigger>
-              <Button>Save</Button>
-            </Dialog.Footer>
             <Dialog.CloseTrigger asChild>
               <CloseButton size="sm" />
             </Dialog.CloseTrigger>
