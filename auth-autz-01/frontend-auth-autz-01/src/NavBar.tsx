@@ -2,7 +2,11 @@ import logo from "@/assets/react.svg";
 import { Avatar, Button, HStack, Image, Menu, Portal } from "@chakra-ui/react";
 import { useState } from "react";
 
-const NavBar = () => {
+interface Props {
+  setRegisterModal: (modalState: boolean) => void;
+}
+
+const NavBar = ({ setRegisterModal }: Props) => {
   const [isLogin, setLogin] = useState(false);
   return (
     <HStack padding={5} justifyContent="space-between">
@@ -25,7 +29,9 @@ const NavBar = () => {
         </Menu.Root>
       ) : (
         <HStack>
-          <Button variant="ghost">Register</Button>
+          <Button variant="ghost" onClick={() => setRegisterModal(true)}>
+            Register
+          </Button>
           <Button variant="ghost">Singin</Button>
         </HStack>
       )}
