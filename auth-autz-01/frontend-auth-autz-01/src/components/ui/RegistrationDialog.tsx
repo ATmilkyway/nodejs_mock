@@ -7,13 +7,32 @@ import {
   Portal,
 } from "@chakra-ui/react";
 import { PasswordInput } from "./password-input";
+import { useForm } from "react-hook-form";
 
 interface Props {
   registerModal: boolean;
   setRegisterModal: (modalState: boolean) => void;
 }
 
+interface FormValues {
+  username: string;
+  password: string;
+}
+
 const RegistrationDialog = ({ registerModal, setRegisterModal }: Props) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormValues>();
+
+  const onSubmit = (data: FormValues) => {
+    console.log("Form submitted:", data);
+    setRegisterModal(false);
+    reset();
+  };
+
   return (
     <Dialog.Root
       placement="center"
@@ -28,31 +47,49 @@ const RegistrationDialog = ({ registerModal, setRegisterModal }: Props) => {
             <Dialog.Header>
               <Dialog.Title>Registration Form</Dialog.Title>
             </Dialog.Header>
+
             <Dialog.Body>
-              {/* form */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  console.log(e);
-                }}
-              >
-                <Field.Root>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Field.Root invalid={!!errors.username}>
                   <Field.Label>UserName</Field.Label>
-                  <Input placeholder="UserName" size="xs" />
+                  <Input
+                    {...register("username", {
+                      required: "Username is required",
+                    })}
+                    placeholder="UserName"
+                    size="xs"
+                  />
+                  <Field.ErrorText>{errors.username?.message}</Field.ErrorText>
                 </Field.Root>
 
-                <Field.Root paddingY={5}>
+                {/* Password */}
+                <Field.Root paddingY={5} invalid={!!errors.password}>
                   <Field.Label>Password</Field.Label>
-                  <PasswordInput placeholder="Password" size="xs" />
+                  <PasswordInput
+                    {...register("password", {
+                      required: "Password is required",
+                    })}
+                    placeholder="Password"
+                    size="xs"
+                  />
+                  <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
                 </Field.Root>
+
+                {/* Footer Buttons */}
                 <Dialog.Footer>
                   <Dialog.ActionTrigger asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setRegisterModal(false)}
+                    >
+                      Cancel
+                    </Button>
                   </Dialog.ActionTrigger>
                   <Button type="submit">Register</Button>
                 </Dialog.Footer>
               </form>
             </Dialog.Body>
+
             <Dialog.CloseTrigger asChild>
               <CloseButton size="sm" />
             </Dialog.CloseTrigger>
