@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { PasswordInput } from "./password-input";
 import { useForm } from "react-hook-form";
+import apiClient from "@/service.ts/apiClient";
 
 interface Props {
   registerModal: boolean;
@@ -27,10 +28,15 @@ const RegistrationDialog = ({ registerModal, setRegisterModal }: Props) => {
     reset,
   } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Form submitted:", data);
-    setRegisterModal(false);
-    reset();
+  const onSubmit = async (data: FormValues) => {
+    try {
+      const res = await apiClient.post("/api/register", data);
+      setRegisterModal(false);
+      console.log(res);
+      reset();
+    } catch (error) {
+      console.error("API error:", error);
+    }
   };
 
   return (
@@ -58,11 +64,11 @@ const RegistrationDialog = ({ registerModal, setRegisterModal }: Props) => {
                     })}
                     placeholder="UserName"
                     size="xs"
+                    autoComplete="off"
                   />
                   <Field.ErrorText>{errors.username?.message}</Field.ErrorText>
                 </Field.Root>
 
-                {/* Password */}
                 <Field.Root paddingY={5} invalid={!!errors.password}>
                   <Field.Label>Password</Field.Label>
                   <PasswordInput
@@ -71,11 +77,11 @@ const RegistrationDialog = ({ registerModal, setRegisterModal }: Props) => {
                     })}
                     placeholder="Password"
                     size="xs"
+                    autoComplete="off"
                   />
                   <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
                 </Field.Root>
 
-                {/* Footer Buttons */}
                 <Dialog.Footer>
                   <Dialog.ActionTrigger asChild>
                     <Button
