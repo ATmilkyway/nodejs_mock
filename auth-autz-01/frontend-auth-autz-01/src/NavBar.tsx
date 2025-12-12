@@ -3,11 +3,11 @@ import { Avatar, Button, HStack, Image, Menu, Portal } from "@chakra-ui/react";
 import { useState } from "react";
 
 interface Props {
+  isLogin: boolean;
   setRegisterModal: (modalState: boolean) => void;
 }
 
-const NavBar = ({ setRegisterModal }: Props) => {
-  const [isLogin, setLogin] = useState(false);
+const NavBar = ({ isLogin, setRegisterModal }: Props) => {
   return (
     <HStack padding={5} justifyContent="space-between">
       <Image src={logo} alt="" />
